@@ -1,0 +1,19 @@
+1 account：
+userid 用户id int PK
+username 用户姓名
+password 用户密码
+email:邮箱
+address：地址
+xm：真实姓名
+
+2.profile
+userid 用户ID int PK
+lang 你喜爱的语言
+catid 你喜爱宠物的id
+
+3.categry
+catid:宠物种类id PK
+catno:宠物编号
+name:中文名称
+descn:描述
+
