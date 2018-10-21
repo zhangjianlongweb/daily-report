@@ -3,17 +3,8 @@ package com.weikun.server.mapper;
 import com.weikun.server.model.Profile;
 import com.weikun.server.model.ProfileExample;
 import java.util.List;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.DeleteProvider;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.UpdateProvider;
+
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 
 public interface ProfileMapper {
@@ -35,6 +26,7 @@ public interface ProfileMapper {
         "values (#{userid,jdbcType=INTEGER}, #{lang,jdbcType=VARCHAR}, ",
         "#{catid,jdbcType=INTEGER})"
     })
+    @Options(useGeneratedKeys = true, keyProperty = "userid", keyColumn = "userid")/*增加这个注解插入记录后会返回自增长的id*/
     int insert(Profile record);
 
     @InsertProvider(type=ProfileSqlProvider.class, method="insertSelective")

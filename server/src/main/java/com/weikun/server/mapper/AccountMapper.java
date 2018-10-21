@@ -3,17 +3,8 @@ package com.weikun.server.mapper;
 import com.weikun.server.model.Account;
 import com.weikun.server.model.AccountExample;
 import java.util.List;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.DeleteProvider;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.UpdateProvider;
+
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 
 public interface AccountMapper {
@@ -37,6 +28,7 @@ public interface AccountMapper {
         "#{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, ",
         "#{xm,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR})"
     })
+    @Options(useGeneratedKeys = true, keyProperty = "userid", keyColumn = "userid")/*增加这个注解插入记录后会返回自增长的id*/
     int insert(Account record);
 
     @InsertProvider(type=AccountSqlProvider.class, method="insertSelective")

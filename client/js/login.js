@@ -19,7 +19,7 @@ $(function(){
             data:a,
             statusCode:{
                 200:function(data){
-                    alert(data);
+                   // alert(data);
                     window.location="../shop/main.html";
                 },
                 404:function(){

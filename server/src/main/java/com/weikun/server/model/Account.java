@@ -4,6 +4,24 @@ import java.io.Serializable;
 
 public class Account implements Serializable {
     private Integer userid;
+    private Profile profile;
+    private String repassword;
+
+    public String getRepassword() {
+        return repassword;
+    }
+
+    public void setRepassword(String repassword) {
+        this.repassword = repassword;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
 
     private String username;
 
