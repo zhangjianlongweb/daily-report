@@ -17,3 +17,20 @@ catno:宠物编号
 name:中文名称
 descn:描述
 
+4.product 产品
+productid 产品id PK
+productno 产品编号
+catid 宠物种类id fk 【category --catid】
+name:产品名称
+descn：产品描述
+pic：产品图片
+
+
+5.item 项目
+itemid：项目id，pk
+itemno:项目编号
+productid产品id fk
+listprice:单价
+attr1：描述
+
+

@@ -34,7 +34,9 @@ public class UserServiceImpl {
     public Account login(Map<String,String> map){
        // Account a=adao.login(map);
         Object o=rdao.getHashTableByKey("account",map.get("username"));
-
+        if(o==null){
+            return null;
+        }
         Account a=(Account)o;
         if(map.get("password").toString().equals(a.getPassword())){
             return a;

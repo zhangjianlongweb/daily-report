@@ -2,6 +2,8 @@ package com.weikun.server.controller;
 
 import com.weikun.server.model.Account;
 import com.weikun.server.model.Category;
+import com.weikun.server.model.Item;
+import com.weikun.server.model.Product;
 import com.weikun.server.service.PetServiceImpl;
 import com.weikun.server.service.UserServiceImpl;
 import io.swagger.annotations.Api;
@@ -34,6 +36,26 @@ public class PetController {
     @GetMapping(value = {"/qc"})
     public ResponseEntity<List> qc(){
         List<Category> list=service.queryCategory();
+        return new ResponseEntity<List>(list, HttpStatus.OK);
+    }
+    @ApiResponses(value = {
+            @ApiResponse(code=404,message = "查询产品错误"),
+            @ApiResponse(code=200,message = "查询产品成功")
+    })
+    @GetMapping(value = {"/qp/{cid}"})
+    public ResponseEntity<List> qp(@PathVariable String cid){//查询product
+        List<Product> list=service.querProduct(cid);
+        return new ResponseEntity<List>(list, HttpStatus.OK);
+    }
+    @GetMapping(value = {"/qis/{pid}"})
+    public ResponseEntity<List> qis(@PathVariable String pid){//查询product
+        List<Item> list=service.querItems(pid);
+        return new ResponseEntity<List>(list, HttpStatus.OK);
+    }
+
+    @GetMapping(value = {"/qi/{iid}/{pid}"})
+    public ResponseEntity<List> qi(@PathVariable String iid,@PathVariable String pid){//查询product
+        List<Item> list=service.querItem(pid,iid);
         return new ResponseEntity<List>(list, HttpStatus.OK);
     }
 

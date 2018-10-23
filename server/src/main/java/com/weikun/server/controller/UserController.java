@@ -54,9 +54,15 @@ public class UserController {
         String result=service.verCookie(MyConst.USERCOOKIE+":"+MyConst.SESSIONID1);
 
         System.out.println(result);
-        String s=result.split(":")[1];
-        if(result!=null){//游客
-            return new ResponseEntity<String>(s,HttpStatus.OK);
+        if(result.indexOf(":")!=-1){
+            String s=result.split(":")[1];
+            if(result!=null){//游客
+                return new ResponseEntity<String>(s,HttpStatus.OK);
+
+            }else{
+
+                return new ResponseEntity<String>("gc",HttpStatus.NOT_FOUND);
+            }
 
         }else{
 

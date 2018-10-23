@@ -1,8 +1,6 @@
 package com.weikun.server.service;
 
-import com.weikun.server.mapper.AccountMapper;
-import com.weikun.server.mapper.CategoryMapper;
-import com.weikun.server.mapper.ProfileMapper;
+import com.weikun.server.mapper.*;
 import com.weikun.server.model.*;
 import com.weikun.server.redis.dao.RedisMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +27,12 @@ public class InitServiceImpl {
     @Autowired
     private ProfileMapper pdao;
 
+    @Autowired
+    private ProductMapper prdao;
+
+    @Autowired
+    private ItemMapper idao;
+
     public void flushdb(){
         List list=new ArrayList();
         rdao.executeRedisByLua(list,"flushDB.lua");
@@ -38,6 +42,10 @@ public class InitServiceImpl {
         this.initAccount();
         this.initProfile();
         this.initCategory();
+        this.initProduct();
+        this.initItem();
+
+
     }
     private void initAccount(){
         AccountExample e=new AccountExample();
@@ -47,6 +55,20 @@ public class InitServiceImpl {
 
         list.forEach(c->rdao.setHashTable("account",c.getUsername(),c));
 
+    }
+    private void initItem(){
+        ItemExample item=new ItemExample();
+        item.createCriteria().andItemidIsNotNull();
+        List<Item> list=idao.selectByExample(item);
+
+        list.forEach(c->rdao.setSet("item:"+c.getProductid()+":"+c.getItemid(),c));;//productid:itemid
+    }
+    private void initProduct(){
+        ProductExample pro=new ProductExample();
+        pro.createCriteria().andProductidIsNotNull();
+        List<Product> list=prdao.selectByExample(pro);
+
+        list.forEach(c->rdao.setSet("product:"+c.getCatid()+":"+c.getProductid(),c));//product:catid:productid
     }
     private void initCategory(){
 

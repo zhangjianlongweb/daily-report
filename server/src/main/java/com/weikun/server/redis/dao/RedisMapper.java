@@ -4,12 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,8 +29,23 @@ public class RedisMapper {
     public void setExpire(String key){
         redisTemplate.expire(key,30, TimeUnit.MINUTES);
     }
+    public Set keysQuery(String key){
+        Set set=redisTemplate.keys(key);
+        return set;
+    }
 
 
+    public Set<Object> unionSetObject(Set otherkeys){//通过键的集合，把所有的对象取出来，返回对象集合
+        SetOperations s=redisTemplate.opsForSet();
+        return s.union("",otherkeys);
+
+
+    }
+    public void setSet(String key,Object obj){
+        SetOperations s=redisTemplate.opsForSet();
+
+        s.add(key,obj);
+    }
 
     public void setHashTable(String tablename,String key ,Object value){
         HashOperations hash=redisTemplate.opsForHash();
