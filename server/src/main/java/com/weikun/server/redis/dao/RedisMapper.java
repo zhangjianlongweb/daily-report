@@ -5,6 +5,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Repository;
@@ -76,4 +77,9 @@ public class RedisMapper {
         return list;
     }
 
+    public void setString(String key,String value){
+        ValueOperations vs=redisTemplate1.opsForValue();
+        vs.set(key,value);
+
+    }
 }

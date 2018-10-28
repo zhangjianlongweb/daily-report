@@ -6,8 +6,10 @@ import com.weikun.server.redis.dao.RedisMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 创建者：weikun【YST】   日期：2018/10/21
@@ -31,7 +33,13 @@ public class InitServiceImpl {
     private ProductMapper prdao;
 
     @Autowired
+    private OrdersMapper odao;
+
+    @Autowired
     private ItemMapper idao;
+
+    @Autowired
+    private CartMapper cadao;
 
     public void flushdb(){
         List list=new ArrayList();
@@ -44,6 +52,8 @@ public class InitServiceImpl {
         this.initCategory();
         this.initProduct();
         this.initItem();
+        this.initOrders();
+        this.initCart();
 
 
     }
@@ -54,6 +64,47 @@ public class InitServiceImpl {
         List<Account> list=adao.selectByExample(e);
 
         list.forEach(c->rdao.setHashTable("account",c.getUsername(),c));
+
+    }
+    private void initOrders(){
+        OrdersExample example=new OrdersExample();
+        example.createCriteria().andOrderidIsNotNull();
+
+        List <Orders>list=odao.selectByExample(example);
+
+
+        list.forEach(c->{
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+            if(c.getOrderdate()!=null){
+                rdao.setString("orders:"+c.getUserid()+":"+c.getOrderid(),sdf.format(c.getOrderdate())+":"+c.getTotalprice());
+
+            }
+
+        });
+
+        //操作maxid字段 maxid:userid  ->0NO(1NO) 0代表orderdate=null 可以继续购物 1代表orderdate不为空，已经提交订单，再操作需要新开订单
+
+        AccountExample example1=new AccountExample();
+        example1.createCriteria().andUseridIsNotNull();//userid
+        List<Account> list1=adao.selectByExample(example1);
+        list1.forEach(a->{
+            Optional optional=list.stream().filter(o->a.getUserid()==o.getUserid()).max((o1, o2)->o1.getOrderid()-o2.getOrderid());
+            if(optional.isPresent()){
+                Orders o=(Orders)optional.get();
+                rdao.setString("maxid:"+a.getUserid(),(o.getOrderdate()==null?"0":"1")+ o.getOrderid());
+            }
+        });
+
+
+
+    }
+    private void initCart(){
+        CartExample example=new CartExample();
+        example.createCriteria().andItemidIsNotNull();
+
+        List <Cart>list=cadao.selectByExample(example);
+        list.forEach(c->rdao.setString("carts:"+c.getUserid()+":"+c.getOrderid()+":"+c.getItemid(),c.getQuantity().toString()));
+
 
     }
     private void initItem(){

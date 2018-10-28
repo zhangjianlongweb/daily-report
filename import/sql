@@ -33,4 +33,16 @@ productid产品id fk
 listprice:单价
 attr1：描述
 
+6 orders：
+ userid：用户id   pk fk
+ orderid：订单编号  pk
+ orderdate:订单日期
+ totalprice：总计
+
+7.cart 购物车
+userid:用户编号  pk fk
+orderid:订单编号 pk fk
+itemid:项目编号 pk fk
+quantity:数量
+
 

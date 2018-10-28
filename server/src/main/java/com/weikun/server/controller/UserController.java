@@ -55,9 +55,10 @@ public class UserController {
 
         System.out.println(result);
         if(result.indexOf(":")!=-1){
-            String s=result.split(":")[1];
+            //String s=result.split(":")[1];
+
             if(result!=null){//сн©м
-                return new ResponseEntity<String>(s,HttpStatus.OK);
+                return new ResponseEntity<String>(result,HttpStatus.OK);
 
             }else{
 

@@ -93,6 +93,8 @@ function showItem(data){
         $("#pic").attr("src","../images/"+value.product.pic);
 
         $("#productno").html(value.product.productno);
+        $("#itemno").html(value.itemno);
+        $("#itemid").val(value.itemid);
 
         $("#price").html(value.listprice);
         $("#descn").html(value.product.descn);

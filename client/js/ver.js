@@ -7,11 +7,12 @@ $(function(){
         dataType:"text",
         statusCode:{
             200:function(data){
-                 $("#loginname").html(data);
+                alert(data.toString().split(":")[1]);
+                 $("#loginname").html(data.toString().split(":")[1]);
                 //window.location="../shop/main.html";
             },
             404:function(data){
-                $("#loginname").html("сн©м");
+                $("#loginname").html("");
                //window.location="../shop/login.html";
             }
         }

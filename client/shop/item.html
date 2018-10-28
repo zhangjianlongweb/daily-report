@@ -5,6 +5,8 @@
 	<script src="../js/jquery-3.1.1.min.js"></script>
 	<script src="../js/top.js"></script>
 	<script src="../js/pet.js"></script>
+	<script src="../js/cart.js"></script>
+
 </head>
 <body>
 <div id="top"></div>
@@ -36,7 +38,8 @@
 			<td>
 				<b><font size="4"> 
 					<span id="productno"></span>
-				
+					<span id="itemno"></span>
+					<input type="hidden" id="itemid"/>
 				</font>
 				</b>
 			</td>
@@ -49,7 +52,7 @@
 		</tr>
 		<tr bgcolor="#FFFF88">
 			<td>
-				<input type="number" name="num" value="1">
+				<input type="number" id="quantity" value="1">
 
 			</td>
 		</tr>
@@ -61,9 +64,9 @@
 
 		<tr bgcolor="#FFFF88">
 			<td>
-				<a href="cart.html"><img border="0"
+				<input type="image" id="add"
 						src="../images/button_add_to_cart.gif" />
-				</a>
+
 			</td>
 		</tr>
 	</table>
