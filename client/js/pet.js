@@ -95,7 +95,9 @@ function showItem(data){
         $("#productno").html(value.product.productno);
         $("#itemno").html(value.itemno);
         $("#itemid").val(value.itemid);
-
+        //alert(value.product.productid+" "+value.itemid)
+       // alert(value.product.productid);
+        $("#productid").val(value.product.productid);
         $("#price").html(value.listprice);
         $("#descn").html(value.product.descn);
 

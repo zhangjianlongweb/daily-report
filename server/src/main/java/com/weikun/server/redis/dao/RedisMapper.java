@@ -42,12 +42,19 @@ public class RedisMapper {
 
 
     }
+    public Object getSet(String key){
+
+        SetOperations s=redisTemplate.opsForSet();
+        return s.members(key);
+    }
     public void setSet(String key,Object obj){
         SetOperations s=redisTemplate.opsForSet();
 
         s.add(key,obj);
     }
-
+    public void del(String key){
+        redisTemplate.delete(key);
+    }
     public void setHashTable(String tablename,String key ,Object value){
         HashOperations hash=redisTemplate.opsForHash();
         hash.put(tablename,key,value);
@@ -76,7 +83,10 @@ public class RedisMapper {
         List list =redisTemplate1.execute(script,args);
         return list;
     }
-
+    public String getString(String key){
+        ValueOperations vs=redisTemplate1.opsForValue();
+        return vs.get(key).toString();
+    }
     public void setString(String key,String value){
         ValueOperations vs=redisTemplate1.opsForValue();
         vs.set(key,value);

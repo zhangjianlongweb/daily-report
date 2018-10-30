@@ -7,7 +7,7 @@ $(function(){
         dataType:"text",
         statusCode:{
             200:function(data){
-                alert(data.toString().split(":")[1]);
+               // alert(data.toString().split(":")[1]);
                  $("#loginname").html(data.toString().split(":")[1]);
                 //window.location="../shop/main.html";
             },

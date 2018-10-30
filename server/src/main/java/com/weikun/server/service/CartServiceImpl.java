@@ -4,13 +4,14 @@ import com.weikun.server.mapper.CartMapper;
 import com.weikun.server.mapper.CategoryMapper;
 import com.weikun.server.mapper.OrdersMapper;
 import com.weikun.server.model.Cart;
+import com.weikun.server.model.CartKey;
+import com.weikun.server.model.Item;
 import com.weikun.server.model.Orders;
 import com.weikun.server.redis.dao.RedisMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 创建者：weikun【YST】   日期：2018/10/28
@@ -26,8 +27,53 @@ public class CartServiceImpl {
     private OrdersMapper odao;
     @Autowired
     private RedisMapper rdao;
+    public List<Cart> showCart(String userid,String orderid){//把所有的订单的商品展示
 
-    public void addCart(Cart cart){
+        Set<String> set=rdao.keysQuery("carts:"+userid+":"+orderid+"*");
+        List<Cart> clist=new ArrayList<Cart>();
+
+        set.forEach(c->{
+            //carts:1:19:26
+            String quantity =rdao.getString(c);
+            String itemid=c.split(":")[3];
+            Cart cart=new Cart();
+            cart.setUserid(Integer.parseInt(userid));
+            cart.setOrderid(Integer.parseInt(orderid));
+            cart.setQuantity(Integer.parseInt(quantity));
+            cart.setItemid(Integer.parseInt(itemid));
+            //System.out.println(productid);
+            //通过itemid去查每个产品的productid
+
+            Set s1=rdao.keysQuery("item:"+"*"+":"+itemid);
+            List list=new ArrayList(s1);
+
+
+            //通过itemid 查item
+            LinkedHashSet set1=(LinkedHashSet)rdao.getSet(list.get(0).toString());
+            Iterator it=set1.iterator();
+            while(it.hasNext()){
+
+                Object obj=it.next();
+                cart.setItem((Item)obj);
+                clist.add(cart);
+
+            }
+
+            System.out.println(set1);
+            //clist.add(cart);
+
+        });//先取itemid，再取数量
+
+
+        return clist;
+
+    }
+    public String getMaxidByUserid(String userid){
+
+        String value=rdao.getString("maxid:"+userid);
+        return value.substring(1);
+    }
+    public String addCart(Cart cart){
         boolean iu=true;//i true update false
         //取出orderid
         List list=new ArrayList();
@@ -95,15 +141,29 @@ public class CartServiceImpl {
             list.add(flag+id);//4 maxid的标记
             rdao.executeRedisByLua(list,"addOrders.lua");
         }
-
         //01 11
-
-
-
-
-
-
+        return id+"";
     }
 
 
+    public void delCart(Cart cart) {
+        //删除redis cart
+        rdao.del("carts:"+cart.getUserid()+":"+cart.getOrderid()+":"+cart.getItemid());//cart
+        //删除mysql
+        CartKey key=new CartKey();
+        key.setUserid(cart.getUserid());
+        key.setItemid(cart.getItemid());
+        key.setOrderid(cart.getOrderid());
+        cdao.deleteByPrimaryKey(key);
+    }
+
+    public void update(Cart cart) {
+        //redis 修改
+        rdao.setString("carts:"+cart.getUserid()+":"+cart.getOrderid()+":"+cart.getItemid(),cart.getQuantity().toString());
+
+        //mysql 修改
+        cdao.updateByPrimaryKey(cart);
+
+
+    }
 }
