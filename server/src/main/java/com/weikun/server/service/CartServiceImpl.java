@@ -71,7 +71,7 @@ public class CartServiceImpl {
     public String getMaxidByUserid(String userid){
 
         String value=rdao.getString("maxid:"+userid);
-        return value.substring(1);
+        return value;//value.substring(1);
     }
     public String addCart(Cart cart){
         boolean iu=true;//i true update false
@@ -138,7 +138,7 @@ public class CartServiceImpl {
             list.add(cart.getOrderid()+"");//2orderid
 
             list.add(flag+id);//3 maxid的标记
-            list.add(flag+id);//4 maxid的标记
+            list.add("0"+id);//4 maxid的标记
             rdao.executeRedisByLua(list,"addOrders.lua");
         }
         //01 11
@@ -164,6 +164,15 @@ public class CartServiceImpl {
         //mysql 修改
         cdao.updateByPrimaryKey(cart);
 
+
+    }
+
+    public void checkout(Orders orders) {
+        //修改MYSQL orders表
+        orders.setOrderdate(new Date());
+        odao.updateByPrimaryKey(orders);
+        //修改redis的maxid：
+        rdao.setString("maxid:"+orders.getUserid(),"1"+orders.getOrderid());
 
     }
 }

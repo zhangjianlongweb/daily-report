@@ -19,6 +19,55 @@ $(function(){
         });
 
     });
+
+
+    $("#checkout").click(function(){
+        var URL="http://localhost:8080/acc/ver";
+        $.ajax({
+            url:URL,
+            type:"get",
+            dataType:"text",
+            statusCode:{
+                200:function(data){
+                    //校验成功
+                   // alert($("*[name='oid']").val());
+                    var orders={
+                        "userid":data.toString().split(":")[0],
+                        "orderid":$("*[name='oid']").val(),//因为id不能够都一样，但是 name可以
+                        "totalprice":$("#total").text()
+
+                    }
+
+                    var d=JSON.stringify(orders);
+                    //alert(d);
+                    var URL="http://localhost:8080/cart/checkout";
+                    $.ajax({
+                        url:URL,
+                        type:"post",
+                        contentType:"application/json",
+                        data:d,
+                        statusCode:{
+                            200:function(data){
+                                window.location="../shop/main.html";
+
+                            },
+                            404:function(data){
+
+                            }
+                        }
+                    });
+
+
+                },
+                404:function(data){
+                    $("#loginname").html("");
+                    window.location="../shop/login.html";
+                }
+            }
+        });
+
+
+    });
 });
 
 function add(userid){
@@ -69,6 +118,7 @@ function showCart(userid){
                 var str="";
                 //alert(data);
                 var total=0;
+
                 $(data).each(function(index,value){
                     total+=value.quantity* value.item.listprice;
                     str+="<tr id=''"+(++d)+"bgcolor=\"#FFFFFF\">" +
@@ -92,14 +142,16 @@ function showCart(userid){
                         "</td>" +
                         "<td>" +
                         "<img src='../images/"+value.item.product.pic+"'/>" +
-
+                        "<input type='hidden' value='"+value.orderid+"' name='oid' />"+
                         "</td>" +
 
                         "<td>" +value.item.listprice+
+
                         "</td>" +
 
                         "<td>" +
-                        "<b> <input type='number' maxlength='2' onchange='update("+this+","+value.itemid+","+value.orderid+")'  id='qty'+"+value.itemid+" value='"+value.quantity+"'/>"+
+
+                        "<b> <input type='number' onchange='update(this"+","+value.itemid+","+value.orderid+")'  id='qty'+"+value.itemid+" value='"+value.quantity+"'/>"+
 
                         "</b>" +
                         "</td>" +
@@ -117,7 +169,7 @@ function showCart(userid){
                 });
 
                 $("#msg>tbody").append(str);
-                $("#total").html("<b>TOTAL:"+total+"</b>");
+                $("#total").html(total);
 
             },
             404:function(data){
@@ -130,25 +182,25 @@ function showCart(userid){
 
 }
 function update(self,itemid,orderid){
-    //alert(self.value)
+    //self.value:取当前文本框的值 也就是数量
 
 
-    // var URL="http://localhost:8080/acc/ver";
-    // $.ajax({
-    //     url:URL,
-    //     type:"get",
-    //     dataType:"text",
-    //     statusCode:{
-    //         200:function(data){
-    //
-    //             post1(data.toString().split(":")[0],orderid,itemid);
-    //         },
-    //         404:function(data){
-    //             $("#loginname").html("");
-    //             window.location="../shop/login.html";
-    //         }
-    //     }
-    // });
+    var URL="http://localhost:8080/acc/ver";
+    $.ajax({
+        url:URL,
+        type:"get",
+        dataType:"text",
+        statusCode:{
+            200:function(data){
+
+                post1(self.value,data.toString().split(":")[0],orderid,itemid);
+            },
+            404:function(data){
+                $("#loginname").html("");
+                window.location="../shop/login.html";
+            }
+        }
+    });
 }
 function del(orderid,itemid){
     var URL="http://localhost:8080/acc/ver";

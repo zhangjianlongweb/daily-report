@@ -1,6 +1,7 @@
 package com.weikun.server.controller;
 
 import com.weikun.server.model.Cart;
+import com.weikun.server.model.Orders;
 import com.weikun.server.service.CartServiceImpl;
 import com.weikun.server.service.PetServiceImpl;
 import io.swagger.annotations.Api;
@@ -34,9 +35,15 @@ public class CartController {
     @GetMapping(value = {"/show/{userid}"})
     public ResponseEntity<List> showCart(@PathVariable String userid){
 
-        String orderid=service.getMaxidByUserid(userid);//通过redis 和userid 取maxid
-
-        List <Cart>list=service.showCart(userid,orderid);
+        String value=service.getMaxidByUserid(userid);//通过redis 和userid 取maxid
+        String flag=value.substring(0,1);
+        String orderid=value.substring(1);
+        int oid=0;
+        oid=Integer.parseInt(orderid);
+        if(flag.equals("1")){//已经提交过了，需要orderid++
+            ++oid;
+        }
+        List <Cart>list=service.showCart(userid,oid+"");
 
 
         return new ResponseEntity<List>(list, HttpStatus.OK);
@@ -49,6 +56,21 @@ public class CartController {
     @PostMapping(value = {"/add"})
     public ResponseEntity<Void> addCart(@RequestBody Cart cart){
         service.addCart(cart);
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+
+
+    @ApiResponses(value = {
+            @ApiResponse(code=404,message = "订单提交错误"),
+            @ApiResponse(code=200,message = "订单提交成功")
+    })
+    @PostMapping(value = {"/checkout"})
+    public ResponseEntity<Void> checkout(@RequestBody Orders orders){
+
+
+        service.checkout(orders);
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
