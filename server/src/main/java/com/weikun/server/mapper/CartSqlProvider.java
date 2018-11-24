@@ -1,73 +1,63 @@
 package com.weikun.server.mapper;
 
-import com.weikun.server.model.Product;
-import com.weikun.server.model.ProductExample.Criteria;
-import com.weikun.server.model.ProductExample.Criterion;
-import com.weikun.server.model.ProductExample;
+import com.weikun.server.model.Cart;
+import com.weikun.server.model.CartExample.Criteria;
+import com.weikun.server.model.CartExample.Criterion;
+import com.weikun.server.model.CartExample;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.jdbc.SQL;
 
-public class ProductSqlProvider {
+public class CartSqlProvider {
 
-    public String countByExample(ProductExample example) {
+    public String countByExample(CartExample example) {
         SQL sql = new SQL();
-        sql.SELECT("count(*)").FROM("product");
+        sql.SELECT("count(*)").FROM("cart");
         applyWhere(sql, example, false);
         return sql.toString();
     }
 
-    public String deleteByExample(ProductExample example) {
+    public String deleteByExample(CartExample example) {
         SQL sql = new SQL();
-        sql.DELETE_FROM("product");
+        sql.DELETE_FROM("cart");
         applyWhere(sql, example, false);
         return sql.toString();
     }
 
-    public String insertSelective(Product record) {
+    public String insertSelective(Cart record) {
         SQL sql = new SQL();
-        sql.INSERT_INTO("product");
+        sql.INSERT_INTO("cart");
         
-        if (record.getProductid() != null) {
-            sql.VALUES("productid", "#{productid,jdbcType=INTEGER}");
+        if (record.getOrderid() != null) {
+            sql.VALUES("orderid", "#{orderid,jdbcType=INTEGER}");
         }
         
-        if (record.getProductno() != null) {
-            sql.VALUES("productno", "#{productno,jdbcType=VARCHAR}");
+        if (record.getItemid() != null) {
+            sql.VALUES("itemid", "#{itemid,jdbcType=INTEGER}");
         }
         
-        if (record.getCatid() != null) {
-            sql.VALUES("catid", "#{catid,jdbcType=INTEGER}");
+        if (record.getUserid() != null) {
+            sql.VALUES("userid", "#{userid,jdbcType=INTEGER}");
         }
         
-        if (record.getName() != null) {
-            sql.VALUES("name", "#{name,jdbcType=VARCHAR}");
-        }
-        
-        if (record.getDescn() != null) {
-            sql.VALUES("descn", "#{descn,jdbcType=VARCHAR}");
-        }
-        
-        if (record.getPic() != null) {
-            sql.VALUES("pic", "#{pic,jdbcType=VARCHAR}");
+        if (record.getQuantity() != null) {
+            sql.VALUES("quantity", "#{quantity,jdbcType=INTEGER}");
         }
         
         return sql.toString();
     }
 
-    public String selectByExample(ProductExample example) {
+    public String selectByExample(CartExample example) {
         SQL sql = new SQL();
         if (example != null && example.isDistinct()) {
-            sql.SELECT_DISTINCT("productid");
+            sql.SELECT_DISTINCT("orderid");
         } else {
-            sql.SELECT("productid");
+            sql.SELECT("orderid");
         }
-        sql.SELECT("productno");
-        sql.SELECT("catid");
-        sql.SELECT("name");
-        sql.SELECT("descn");
-        sql.SELECT("pic");
-        sql.FROM("product");
+        sql.SELECT("itemid");
+        sql.SELECT("userid");
+        sql.SELECT("quantity");
+        sql.FROM("cart");
         applyWhere(sql, example, false);
         
         if (example != null && example.getOrderByClause() != null) {
@@ -78,34 +68,26 @@ public class ProductSqlProvider {
     }
 
     public String updateByExampleSelective(Map<String, Object> parameter) {
-        Product record = (Product) parameter.get("record");
-        ProductExample example = (ProductExample) parameter.get("example");
+        Cart record = (Cart) parameter.get("record");
+        CartExample example = (CartExample) parameter.get("example");
         
         SQL sql = new SQL();
-        sql.UPDATE("product");
+        sql.UPDATE("cart");
         
-        if (record.getProductid() != null) {
-            sql.SET("productid = #{record.productid,jdbcType=INTEGER}");
+        if (record.getOrderid() != null) {
+            sql.SET("orderid = #{record.orderid,jdbcType=INTEGER}");
         }
         
-        if (record.getProductno() != null) {
-            sql.SET("productno = #{record.productno,jdbcType=VARCHAR}");
+        if (record.getItemid() != null) {
+            sql.SET("itemid = #{record.itemid,jdbcType=INTEGER}");
         }
         
-        if (record.getCatid() != null) {
-            sql.SET("catid = #{record.catid,jdbcType=INTEGER}");
+        if (record.getUserid() != null) {
+            sql.SET("userid = #{record.userid,jdbcType=INTEGER}");
         }
         
-        if (record.getName() != null) {
-            sql.SET("name = #{record.name,jdbcType=VARCHAR}");
-        }
-        
-        if (record.getDescn() != null) {
-            sql.SET("descn = #{record.descn,jdbcType=VARCHAR}");
-        }
-        
-        if (record.getPic() != null) {
-            sql.SET("pic = #{record.pic,jdbcType=VARCHAR}");
+        if (record.getQuantity() != null) {
+            sql.SET("quantity = #{record.quantity,jdbcType=INTEGER}");
         }
         
         applyWhere(sql, example, true);
@@ -114,50 +96,34 @@ public class ProductSqlProvider {
 
     public String updateByExample(Map<String, Object> parameter) {
         SQL sql = new SQL();
-        sql.UPDATE("product");
+        sql.UPDATE("cart");
         
-        sql.SET("productid = #{record.productid,jdbcType=INTEGER}");
-        sql.SET("productno = #{record.productno,jdbcType=VARCHAR}");
-        sql.SET("catid = #{record.catid,jdbcType=INTEGER}");
-        sql.SET("name = #{record.name,jdbcType=VARCHAR}");
-        sql.SET("descn = #{record.descn,jdbcType=VARCHAR}");
-        sql.SET("pic = #{record.pic,jdbcType=VARCHAR}");
+        sql.SET("orderid = #{record.orderid,jdbcType=INTEGER}");
+        sql.SET("itemid = #{record.itemid,jdbcType=INTEGER}");
+        sql.SET("userid = #{record.userid,jdbcType=INTEGER}");
+        sql.SET("quantity = #{record.quantity,jdbcType=INTEGER}");
         
-        ProductExample example = (ProductExample) parameter.get("example");
+        CartExample example = (CartExample) parameter.get("example");
         applyWhere(sql, example, true);
         return sql.toString();
     }
 
-    public String updateByPrimaryKeySelective(Product record) {
+    public String updateByPrimaryKeySelective(Cart record) {
         SQL sql = new SQL();
-        sql.UPDATE("product");
+        sql.UPDATE("cart");
         
-        if (record.getProductno() != null) {
-            sql.SET("productno = #{productno,jdbcType=VARCHAR}");
+        if (record.getQuantity() != null) {
+            sql.SET("quantity = #{quantity,jdbcType=INTEGER}");
         }
         
-        if (record.getCatid() != null) {
-            sql.SET("catid = #{catid,jdbcType=INTEGER}");
-        }
-        
-        if (record.getName() != null) {
-            sql.SET("name = #{name,jdbcType=VARCHAR}");
-        }
-        
-        if (record.getDescn() != null) {
-            sql.SET("descn = #{descn,jdbcType=VARCHAR}");
-        }
-        
-        if (record.getPic() != null) {
-            sql.SET("pic = #{pic,jdbcType=VARCHAR}");
-        }
-        
-        sql.WHERE("productid = #{productid,jdbcType=INTEGER}");
+        sql.WHERE("orderid = #{orderid,jdbcType=INTEGER}");
+        sql.WHERE("itemid = #{itemid,jdbcType=INTEGER}");
+        sql.WHERE("userid = #{userid,jdbcType=INTEGER}");
         
         return sql.toString();
     }
 
-    protected void applyWhere(SQL sql, ProductExample example, boolean includeExamplePhrase) {
+    protected void applyWhere(SQL sql, CartExample example, boolean includeExamplePhrase) {
         if (example == null) {
             return;
         }
